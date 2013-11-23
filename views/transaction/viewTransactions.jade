@@ -1,0 +1,33 @@
+extends ../layout
+
+block content
+	if !(transactions && transactions.length)
+		p No transactions yet
+	else
+		table.transactions(border='1')
+			tr
+				th Date
+				th Place
+				th Category
+				th Payment type
+				th Amount (CAD)
+				th Amount (INR)
+			each transaction in transactions
+				tr
+					td= transaction.created.toDateString()
+					td= transaction.place
+					td= transaction.category
+					td= transaction.paymentType
+					td= transaction.amountForeign
+					td= transaction.amountHome
+					td 
+						a(href="/transaction/remove/" + transaction.id) remove
+					td 
+						a(href="/transaction/edit/" + transaction.id) Edit
+			tr
+				td Total
+				td 
+				td 
+				td 
+				td= totals[0].totalForeign
+				td= totals[0].totalHome

@@ -1,0 +1,29 @@
+extends layout
+
+block content
+	h1 From Edit profile
+	action = user ? "/profile/edit/"+user.id : '/login'
+	firstname = user ? user.name.first : ''
+	lastname = user ? user.name.last : ''
+	email = user ? user.id : ''
+	currentCountry = user ? user.currentCountry : ''
+	homeCountry = user ? user.homeCountry : ''
+	form(method="post", action=action)
+		ul
+			li
+				label(for='firstname') First Name:
+				input#firstname(name='firstname', value=firstname)
+			li
+				label(for='lastname') Last Name:
+				input#lastname(name='lastname', value=lastname)
+			li
+
+				label(for='password') Password:
+				input#password(name='password', type='password')
+			li
+				label(for='currentCountry') Current country:
+				input#currentCountry(name='currentCountry', placeholder="CAD, USD .. ", value=currentCountry)
+			li
+				label(for='homeCountry') Home country:
+				input#homeCountry(name='homeCountry', placeholder="INR, EUR .. ", value=homeCountry)
+		input(type='submit', value='Update')

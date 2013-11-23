@@ -1,0 +1,6 @@
+extends layout
+
+block content
+	if session.loggedIn
+	h1	Welcome 
+		= session.user

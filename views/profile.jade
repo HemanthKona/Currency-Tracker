@@ -1,0 +1,17 @@
+extends layout
+
+block content
+	h1 Hello 
+		= user.name.first  
+		= user.name.last
+	table(border="1")
+		tr
+			td Email
+			td= user.id
+		tr
+			td Current country
+			td= user.currentCountry	
+		tr
+			td Home country
+			td= user.homeCountry	
+	a(href="/profile/edit/" + user.id) Edit profile
