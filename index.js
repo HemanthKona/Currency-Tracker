@@ -17,6 +17,9 @@ var middleware = require('./middleware');
 
 mongoose.set('debug', true);
 
+//mongodb://user:password@dharma.mongohq.com:10068/currency
+
+//Connecting to local mongo instance
 mongoose.connect('mongodb://localhost/currency', function(err) {
 	if(err) throw err;
 
