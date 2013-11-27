@@ -6,12 +6,18 @@ block content
 	else
 		table.transactions(border='1')
 			tr
-				th Date
-				th Place
-				th Category
-				th Payment type
-				th Amount (CAD)
-				th Amount (INR)
+				th 
+					a(href="/transactions/sortBy/created") Date
+				th 
+					a(href="/transactions/sortBy/place") Place
+				th 
+					a(href="/transactions/sortBy/category") Category
+				th 
+					a(href="/transactions/sortBy/paymentType") Payment type
+				th 
+					a(href="/transactions/sortBy/amountForeign") Amount (CAD)
+				th 
+					a(href="/transactions/sortBy/amountHome") Amount (INR)
 			each transaction in transactions
 				tr
 					td= transaction.created.toDateString()
@@ -21,13 +27,14 @@ block content
 					td= transaction.amountForeign
 					td= transaction.amountHome
 					td 
-						a(href="/transaction/remove/" + transaction.id) remove
+						a(href="/transaction/remove/" + transaction._id) remove
 					td 
-						a(href="/transaction/edit/" + transaction.id) Edit
+						a(href="/transaction/edit/" + transaction._id) Edit
 			tr
+			each total in totals
 				td Total
 				td 
 				td 
 				td 
-				td= totals[0].totalForeign
-				td= totals[0].totalHome
+				td= total.totalForeign
+				td= total.totalHome

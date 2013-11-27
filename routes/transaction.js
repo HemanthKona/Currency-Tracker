@@ -5,6 +5,8 @@
 	Revision history
 	Hemanth Kona, 2013.11.18: created
 	Hemanth Kona, 2013.11.22: Implemented MongoDB aggreagation framework to find the total amount spent
+	Hemanth Kona, 2013.11.26: Sort by 
+
 */
 
 var loggedIn = require('../middleware/loggedIn');
@@ -86,12 +88,14 @@ module.exports = function(app) {
 					totalHome: { $sum: '$amountHome' }
 				}).exec(function(err,totals) {
 					if(err) return next(err);
+					
 					//console.log(totals);
+
+					req.session.totals = totals;
+
 					res.render('transaction/viewTransactions.jade', { transactions: transactions, totals: totals});
 				})
-			
 		});
-
 	})
 
 	//Update
@@ -142,4 +146,63 @@ module.exports = function(app) {
 		})
 		
 	})
+
+	//Sort by date, place, category, paymentType, amountForeign, amountHome
+
+	app.get("/transactions/sortBy/:sort", loggedIn, function(req, res, next) {
+		var sort = req.param('sort');
+		var user = req.session.user;
+		var totals = req.session.totals;
+		
+		if(!req.session.sortDirection) req.session.sortDirection = 1;
+		else if(req.session.sortDirection === 1) req.session.sortDirection = -1;
+		else req.session.sortDirection = 1;
+
+		var query = Transaction.aggregate().match({ user: user})
+		
+		if(sort == "created"){
+			query.sort({
+				created : req.session.sortDirection
+			})
+		}
+		
+		if(sort == "place"){
+			query.sort({
+				place : req.session.sortDirection
+			})
+		}
+		if(sort == "category"){
+			query.sort({
+				category : req.session.sortDirection
+			})
+		}
+		
+		if(sort == "paymentType"){
+			query.sort({
+				paymentType : req.session.sortDirection
+			})
+		}
+
+		if(sort == "amountForeign"){
+			query.sort({
+				amountForeign : req.session.sortDirection
+			})
+		}
+		
+		if(sort == "amountHome"){
+			query.sort({
+				amountHome : req.session.sortDirection
+			})
+		}
+
+		query.exec(function(err,transactions) {
+			if(err) return next(err);
+
+			if(!transactions) return next();
+			
+			res.render('transaction/viewTransactions.jade', { transactions: transactions, totals: totals});
+		})
+
+	})
+
 }
