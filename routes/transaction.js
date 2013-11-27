@@ -108,23 +108,36 @@ module.exports = function(app) {
 	app.post("/transaction/edit/:id", loggedIn, function(req, res, next) {
 		var id = req.param('id');
 		var user = req.session.user;
+		var place = req.param('place');
+		var category = req.param('category');
+		var paymentType = req.param('paymentType');
+		var amountForeign = req.param('amountForeign');
+		var currentCountry = req.session.currentCountry;
+		var homeCountry = req.session.homeCountry;
 
-		var query = { _id: id, user: user};
-		var update = {};
-		update.place = req.param('place');
-		update.category = req.param('category');
-		update.paymentType = req.param('paymentType');
-		update.amountForeign = req.param('amountForeign');
-		update.amountHome = req.param('amountForeign') * 50;
-		
-		Transaction.update(query, update, function (err, num) {
-			if(err) return next(err);
+		oxr.latest(function() {
+			fx.base = oxr.base;
+			fx.rates = oxr.rates;
 			
-			if(0 === num){
-				return next(new Error('No transaction to modify'));
-			}
+			amountHome = fx(amountForeign).from(currentCountry).to(homeCountry)
 
-			res.redirect("/transaction/"+ id);
+			var query = { _id: id, user: user};
+			var update = {};
+			update.place = place;
+			update.category = category;
+			update.paymentType = paymentType;
+			update.amountForeign = amountForeign;
+			update.amountHome = amountHome;
+
+			Transaction.update(query, update, function (err, num) {
+				if(err) return next(err);
+				
+				if(0 === num){
+					return next(new Error('No transaction to modify'));
+				}
+
+				res.redirect("/transaction/"+ id);
+			})
 		})
 	})
 
