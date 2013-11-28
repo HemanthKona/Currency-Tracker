@@ -15,20 +15,24 @@ var models = require('./models');
 var routes = require('./routes');
 var middleware = require('./middleware');
 
+var mongoUri = process.env.MONGOHQ_URL || 'mongodb://localhost/currency';
+
 mongoose.set('debug', true);
 
 //mongodb://user:password@dharma.mongohq.com:10068/currency
 
 //Connecting to local mongo instance
-mongoose.connect('mongodb://localhost/currency', function(err) {
+mongoose.connect(mongoUri, function(err) {
 	if(err) throw err;
 
 	var app = express();
 	middleware(app);
 	routes(app);
 
-	app.listen(3000, function() {
-		console.log('Now listening on localhost port 3000');
+	var port = process.env.PORT || 3000
+
+	app.listen(port, function() {
+		console.log('Now listening on localhost port ' + port);
 	});
 });
 
