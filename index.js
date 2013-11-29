@@ -15,13 +15,11 @@ var models = require('./models');
 var routes = require('./routes');
 var middleware = require('./middleware');
 
-var mongoUri = process.env.MONGOHQ_URL || 'mongodb://localhost/currency';
+var mongoUri = 'mongodb://user:password@dharma.mongohq.com:10068/currency';
 
 mongoose.set('debug', true);
 
-//mongodb://user:password@dharma.mongohq.com:10068/currency
-
-//Connecting to local mongo instance
+//Connecting to mongo instance
 mongoose.connect(mongoUri, function(err) {
 	if(err) throw err;
 
