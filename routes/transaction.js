@@ -179,30 +179,30 @@ module.exports = function(app) {
 			})
 		}
 		
-		if(sort == "place"){
+		else if(sort == "place"){
 			query.sort({
 				place : req.session.sortDirection
 			})
 		}
-		if(sort == "category"){
+		else if(sort == "category"){
 			query.sort({
 				category : req.session.sortDirection
 			})
 		}
 		
-		if(sort == "paymentType"){
+		else if(sort == "paymentType"){
 			query.sort({
 				paymentType : req.session.sortDirection
 			})
 		}
 
-		if(sort == "amountForeign"){
+		else if(sort == "amountForeign"){
 			query.sort({
 				amountForeign : req.session.sortDirection
 			})
 		}
 		
-		if(sort == "amountHome"){
+		else if(sort == "amountHome"){
 			query.sort({
 				amountHome : req.session.sortDirection
 			})

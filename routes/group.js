@@ -14,6 +14,7 @@ var User = mongoose.model('User');
 module.exports = function(app) {
 
 	app.get('/group/', loggedIn, function(req, res) {
+		
 		res.render('group/index.jade');
 	})
 
@@ -25,7 +26,7 @@ module.exports = function(app) {
 		var name = req.param('name');
 		var category = req.param('category');
 		var user = req.session.user;
-		var members = [user];
+		var members = user;
 
 		var query;
 		var update;
