@@ -1,0 +1,21 @@
+2013-11-28T23:58:35.764481+00:00 heroku[api]: Enable Logplex by hemanth0690@gmail.com
+2013-11-28T23:58:35.803993+00:00 heroku[api]: Release v2 created by hemanth0690@gmail.com
+2013-11-29T00:01:55.035314+00:00 heroku[api]: Add PATH config by hemanth0690@gmail.com
+2013-11-29T00:01:55.049423+00:00 heroku[api]: Release v3 created by hemanth0690@gmail.com
+2013-11-29T00:01:55.125438+00:00 heroku[api]: Deploy 3d9677f by hemanth0690@gmail.com
+2013-11-29T00:01:55.150821+00:00 heroku[api]: Release v4 created by hemanth0690@gmail.com
+2013-11-29T00:01:55+00:00 heroku[slug-compiler]: Slug compilation finished
+2013-11-29T00:02:07.314697+00:00 heroku[router]: at=error code=H14 desc="No web processes running" method=GET path=/ host=currencytrac.herokuapp.com fwd="142.156.1.223" dyno= connect= service= status=503 bytes=
+2013-11-29T00:02:07.475581+00:00 heroku[router]: at=error code=H14 desc="No web processes running" method=GET path=/favicon.ico host=currencytrac.herokuapp.com fwd="142.156.1.223" dyno= connect= service= status=503 bytes=
+2013-11-29T00:03:47+00:00 heroku[slug-compiler]: Slug compilation started
+2013-11-29T00:05:00.778985+00:00 heroku[api]: Deploy d7b5d48 by hemanth0690@gmail.com
+2013-11-29T00:05:00.817209+00:00 heroku[api]: Release v5 created by hemanth0690@gmail.com
+2013-11-29T00:05:00+00:00 heroku[slug-compiler]: Slug compilation finished
+2013-11-29T00:05:09.310894+00:00 heroku[router]: at=error code=H14 desc="No web processes running" method=GET path=/favicon.ico host=currencytrac.herokuapp.com fwd="142.156.1.223" dyno= connect= service= status=503 bytes=
+2013-11-29T00:05:09.206644+00:00 heroku[router]: at=error code=H14 desc="No web processes running" method=GET path=/ host=currencytrac.herokuapp.com fwd="142.156.1.223" dyno= connect= service= status=503 bytes=
+2013-11-29T00:09:20.505658+00:00 heroku[api]: Add mongohq:sandbox add-on by hemanth0690@gmail.com
+2013-11-29T00:09:20.517267+00:00 heroku[api]: Release v6 created by hemanth0690@gmail.com
+2013-11-29T00:26:37+00:00 heroku[slug-compiler]: Slug compilation started
+2013-11-29T00:27:06.394895+00:00 heroku[api]: Deploy 9b87bc6 by hemanth0690@gmail.com
+2013-11-29T00:27:06.410070+00:00 heroku[api]: Release v8 created by hemanth0690@gmail.com
+2013-11-29T00:27:06+00:00 heroku[slug-compiler]: Slug compilation finished

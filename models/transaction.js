@@ -4,13 +4,12 @@
 
 	Revision history
 	Hemanth Kona, 2013.11.12: created
+	Hemanth Kona, 2013.11.30: groupId field added
 */
 
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var createdDate = require('../plugins/createdDate');
-
-var exchngAmount = 55;
 
 // Transaction schema definition
 var schema = mongoose.Schema({
@@ -19,8 +18,8 @@ var schema = mongoose.Schema({
 	category: { type: String, trim: true },
 	paymentType: { type: String, trim: true},
 	amountForeign: { type : Number, trim: true, required: true, min: 0 },
-	amountHome: { type : Number, trim: true }
-	//groupId: { type : ObjectId, ref: 'Group', required: false}
+	amountHome: { type : Number, trim: true },
+	groupId: { type : ObjectId, ref: 'Group' }
 });
 
 // add created date property to the schema

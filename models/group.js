@@ -4,6 +4,7 @@
 
 	Revision history
 	Hemanth Kona, 2013.11.12: created
+	Hemanth Kona, 2013.11.30: schema modified, added memebers field
 */
 
 var mongoose = require('mongoose');
@@ -13,7 +14,7 @@ var createdDate = require('../plugins/createdDate');
 var schema = mongoose.Schema({
 	name: { type: String, trim: true },
 	category: { type: String },
-	Members: { type: Array(10), ref : User }
+	members: { type: Array(10), ref : 'User' }
 });
 
 // add created date property to the schema

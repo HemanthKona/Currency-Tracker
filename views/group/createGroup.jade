@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+	h1 Create group
+
+	form(method="post", action="/group/createGroup")
+		ul
+			li
+				label(for="name") Name:
+				input#name(name="name", value=name, placeholder="Name")
+			li
+				label(for="category") Category:
+				input#category(name="category", value=category, placeholder="category")
+			li
+				input#submit(type="submit", value="Create group")

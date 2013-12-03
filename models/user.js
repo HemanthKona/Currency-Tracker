@@ -5,6 +5,7 @@
 	Revision history
 	Hemanth Kona, 2013.11.12: created
 	Hemanth Kona, 2013.11.20: currenctCountry and homeCountry fields are added to the schema
+	Hemanth Kona, 2013.11.30: groups field added
 */
 
 var mongoose = require('mongoose');
@@ -19,7 +20,7 @@ var schema = mongoose.Schema({
 	hash: { type: String, required: true },
 	currentCountry: { type: String, default: 'CAD'} ,
 	homeCountry: { type: String, default: 'INR' },
-	groups: { type: Array(10) }
+	groups: { type: Array(10), ref: 'Group' }
 });
 
 // add created date property to the schema

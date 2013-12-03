@@ -9,6 +9,7 @@ var errors = require('./errors');
 var login = require('./login');
 var transaction = require('./transaction');
 var user = require('./user');
+var group = require('./group');
 
 module.exports = function(app) {
 
@@ -25,4 +26,7 @@ module.exports = function(app) {
 
   //user
   user(app);
+
+  //group
+  group(app);
 };

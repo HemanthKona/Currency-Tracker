@@ -7,3 +7,4 @@
 */
 exports.User = require('./user');
 exports.Transaction = require('./transaction');
+exports.Group = require('./group');
