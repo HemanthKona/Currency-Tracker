@@ -2,3 +2,9 @@ extends ../layout
 
 block content
 	h1 From group Index
+	if !(groupNames && groupNames.length)
+		p No groups present
+	else
+		each groupName in groupNames
+			p= groupName
+

@@ -13,11 +13,61 @@ var User = mongoose.model('User');
 
 module.exports = function(app) {
 
+	//group home
 	app.get('/group/', loggedIn, function(req, res) {
-		
-		res.render('group/index.jade');
+		var id = req.session.user;
+		var groupNames = [];
+
+		User.aggregate()
+			.match({_id: id})
+			.project({
+				_id: 0,
+				groups: 1
+			})
+			.exec(function(err, grouplist) {
+				if(err) return next(err);
+
+				if(!grouplist) return next();
+
+				console.log(grouplist);
+
+				grouplist.forEach(function(groups) {
+					var j = 0;
+					groups.forEach(function(g) {
+						Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
+							if(err) return next(err);
+
+							if(!groupName) return next();
+
+							groupNames.push(groupName.name);
+
+							j++;
+						});
+					})
+				})
+
+
+				for (var i = 0; i < grouplist.length; i++)
+					var groups = grouplist[i].groups;
+					for(var j = 0; j < groups.length; j++)
+						Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
+							if(err) return next(err);
+
+							if(!groupName) return next();
+
+							groupNames.push(groupName.name);
+
+							
+						});
+				
+				console.log(groupNames);
+				res.render('group/index.jade', { groupNames: groupNames });
+
+			})
+
 	})
 
+	//create group
 	app.get("/group/createGroup", loggedIn, function(re, res) {
 		res.render('group/createGroup.jade');
 	})
@@ -39,9 +89,11 @@ module.exports = function(app) {
 			if(err) return next(err);
 
 			req.session.group = group.id;
+			console.log(req.session.group)
+			var group = { name: name, groupId:group.id};
 
 			query = { _id: user}
-			update = { $addToSet : { groups : group.id } };
+			update = { $addToSet : { groups : group } }
 
 			User.update(query, update, function(err, num) {
 				if(err) return next(err);
@@ -51,11 +103,12 @@ module.exports = function(app) {
 					return next(new Error('No user to modify'));
 				}
 
-				res.redirect('/group/' + group.id)
+				res.redirect('/group/' + req.session.group)
 			})		
 		})
 	})
 
+	//view group details
 	app.get('/group/:id', loggedIn, function(req,res, next) {
 		var id = req.param('id');
 
@@ -69,7 +122,15 @@ module.exports = function(app) {
 		})
 	})
 
+	//add group
 	app.get('/group/add/', loggedIn, function(req,res) {
 		res.render('group/add.jade');
 	}) 
+
+	//add group transactoin
+	app.get('/group//transaction/newTransaction', function(req, res) {
+
+		Group.findById()
+		res.render('/transaction/newTransaction', {})
+	})
 }
