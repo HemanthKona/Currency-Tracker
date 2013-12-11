@@ -9,6 +9,7 @@
 */
 
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 var createdDate = require('../plugins/createdDate');
 var validEmail = require('../helpers/validateEmail');
 
@@ -20,7 +21,10 @@ var schema = mongoose.Schema({
 	hash: { type: String, required: true },
 	currentCountry: { type: String, default: 'CAD'} ,
 	homeCountry: { type: String, default: 'INR' },
-	groups: { type: Array(10), ref: 'Group' }
+	groups: [{
+		name: String,
+		groupId: {type: ObjectId, ref: 'Group'}
+	}]
 });
 
 // add created date property to the schema

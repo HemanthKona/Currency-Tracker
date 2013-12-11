@@ -13,7 +13,6 @@ var createdDate = require('../plugins/createdDate');
 // Transaction schema definition
 var schema = mongoose.Schema({
 	name: { type: String, trim: true },
-	category: { type: String },
 	members: { type: Array(10), ref : 'User' }
 });
 

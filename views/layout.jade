@@ -1,18 +1,16 @@
-html5
 html
 	head
-		title= pageTitle
+		title Hello worl
+		link(ref='stylesheet', type='text/css', href='/stylesheets/style.css')
 	body
-		header
-			h1= pageTitle
 		a(href="/") Home
-		section.login
+			section.login
 			ul
 				if session.isLoggedIn
 					li
 						a(href="/logout") Logout
 					li
-						a(href="/transaction/newTransaction") New Transaction
+						a(href="/transaction/create") New Transaction
 					li
 						a(href="/transactions") View transactions
 					li
@@ -20,7 +18,7 @@ html
 					li
 						a(href="/group/") Group
 					li
-						a(href="/group/createGroup") Create group
+						a(href="/group/create") Create group
 				else
 					li
 						a(href="/login") Login

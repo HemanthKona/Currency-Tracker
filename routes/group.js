@@ -20,10 +20,10 @@ module.exports = function(app) {
 
 		User.aggregate()
 			.match({_id: id})
-			.project({
-				_id: 0,
-				groups: 1
-			})
+			// .project({
+			// 	_id: 0,
+			// 	groups: 1
+			// })
 			.exec(function(err, grouplist) {
 				if(err) return next(err);
 
@@ -32,9 +32,15 @@ module.exports = function(app) {
 				console.log(grouplist);
 
 				grouplist.forEach(function(groups) {
+					console.log("1");
 					var j = 0;
-					groups.forEach(function(g) {
-						Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
+					console.log("2");
+					groups[0].forEach(function(g) {
+						console.log("3");
+						Group.findById(g[j], {_id: false, name: true}, function(err, groupName) {
+
+							console.log("4");
+
 							if(err) return next(err);
 
 							if(!groupName) return next();
@@ -47,18 +53,18 @@ module.exports = function(app) {
 				})
 
 
-				for (var i = 0; i < grouplist.length; i++)
-					var groups = grouplist[i].groups;
-					for(var j = 0; j < groups.length; j++)
-						Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
-							if(err) return next(err);
+				// for (var i = 0; i < grouplist.length; i++)
+				// 	var groups = grouplist[i].groups;
+				// 	for(var j = 0; j < groups.length; j++)
+				// 		Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
+				// 			if(err) return next(err);
 
-							if(!groupName) return next();
+				// 			if(!groupName) return next();
 
-							groupNames.push(groupName.name);
+				// 			groupNames.push(groupName.name);
 
 							
-						});
+				// 		});
 				
 				console.log(groupNames);
 				res.render('group/index.jade', { groupNames: groupNames });
@@ -68,13 +74,12 @@ module.exports = function(app) {
 	})
 
 	//create group
-	app.get("/group/createGroup", loggedIn, function(re, res) {
-		res.render('group/createGroup.jade');
+	app.get("/group/create", loggedIn, function(re, res) {
+		res.render('group/create.jade');
 	})
 
-	app.post("/group/createGroup", loggedIn, function(req, res, next) {
+	app.post("/group/create", loggedIn, function(req, res, next) {
 		var name = req.param('name');
-		var category = req.param('category');
 		var user = req.session.user;
 		var members = user;
 
@@ -83,16 +88,15 @@ module.exports = function(app) {
 
 		Group.create({
 			name: name,
-			category: category,
 			members: members
 		}, function(err, group) {
 			if(err) return next(err);
 
 			req.session.group = group.id;
-			console.log(req.session.group)
-			var group = { name: name, groupId:group.id};
+			console.log(req.session.group);
+			var group = { name: name, groupId: group.id };
 
-			query = { _id: user}
+			query = { _id: user }
 			update = { $addToSet : { groups : group } }
 
 			User.update(query, update, function(err, num) {
@@ -118,19 +122,13 @@ module.exports = function(app) {
 
 			if(!group) return next();
 
-			res.render('group/viewGroup.jade', { group: group })
+			res.render('group/view.jade', { group: group })
 		})
 	})
 
-	//add group
-	app.get('/group/add/', loggedIn, function(req,res) {
-		res.render('group/add.jade');
-	}) 
+	// //add group transactoin
 
-	//add group transactoin
-	app.get('/group//transaction/newTransaction', function(req, res) {
-
-		Group.findById()
-		res.render('/transaction/newTransaction', {})
-	})
+	// app.get('/group/transaction/newTransaction', function(req, res) {
+	// 	res.render('/transaction/newTransaction', {})
+	// })
 }

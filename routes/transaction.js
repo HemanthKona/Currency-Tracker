@@ -19,12 +19,12 @@ oxr.set({ app_id: 'f03d2d61cca9406abd745c5c3b4e66ed'});
 
 module.exports = function(app) {
 
-	app.get("/transaction/newTransaction", loggedIn, function(req, res) {
-		res.render('transaction/newTransaction.jade');
+	app.get("/transaction/create", loggedIn, function(req, res) {
+		res.render('transaction/create.jade');
 	})
 
 	//Create new transaction
-	app.post("/transaction/newTransaction", loggedIn, function(req, res, next) {
+	app.post("/transaction/create", loggedIn, function(req, res, next) {
 		var place = req.param('place');
 		var category = req.param('category');
 		var paymentType = req.param('paymentType');
@@ -66,7 +66,7 @@ module.exports = function(app) {
 
 			if(!transaction) return next();
 
-			res.render('transaction/viewTransaction.jade', {transaction: transaction })		
+			res.render('transaction/view.jade', {transaction: transaction })		
 		})
 	})
 
@@ -93,14 +93,14 @@ module.exports = function(app) {
 
 					req.session.totals = totals;
 
-					res.render('transaction/viewTransactions.jade', { transactions: transactions, totals: totals});
+					res.render('transaction/index.jade', { transactions: transactions, totals: totals});
 				})
 		});
 	})
 
 	//Update
 	app.get("/transaction/edit/:id", loggedIn, function(req, res, next) {
-		res.render('transaction/newTransaction.jade', {
+		res.render('transaction/create.jade', {
 			transaction: Transaction.findById(req.param('id'))
 		})
 	})
@@ -213,7 +213,7 @@ module.exports = function(app) {
 
 			if(!transactions) return next();
 			
-			res.render('transaction/viewTransactions.jade', { transactions: transactions, totals: totals});
+			res.render('transaction/index.jade', { transactions: transactions, totals: totals});
 		})
 
 	})

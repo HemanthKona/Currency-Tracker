@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+	h1 From new transaction
+	action = transaction ? "/transaction/edit/"+transaction.id : "/transaction/newTransaction"
+	place = transaction ? transaction.place : ''
+	category = transaction ? transaction.category : ''
+	paymentType = transaction ? transaction.paymentType : ''
+	amountForeign = transaction ? transaction.amountForeign : ''
+	form(method="post", action=action)
+		ul
+			li
+				label(for="place") Place
+				input#place(name="place", value=place, placeholder="place")
+			li
+				label(for="category") Category
+				input#category(name="category", value=category, placeholder="category")
+			li
+				label(for="paymentType") Payment type
+				input#paymentType(name="paymentType", value=paymentType, placeholder="Payment type")
+			li
+				label(for="amountForeign") Amount
+				input#amountForeign(name="amountForeign", value=amountForeign, placeholder="Amount(CAD)")
+			input#group(type="hidden", name="group", value="group.id")
+			li
+				input#submit(type="submit", value="Add transaction")
