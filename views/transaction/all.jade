@@ -1,4 +1,4 @@
-if !(transactions && transactions.length)
+if !(transactions)
 		p No transactions yet
 	else
 		.row
@@ -40,12 +40,12 @@ if !(transactions && transactions.length)
 								a(href="/transaction/edit/" + transaction._id)
 									i.fi-pencil
 					tr
-					each total in totals
-						td Total
-						td 
-						td 
-						td 
-						td= total.totalForeign
-						td= total.totalHome
-						td
-						td
+						each total in totals
+							td Total
+							td 
+							td 
+							td 
+							td= total.totalForeign
+							td= total.totalHome
+							td
+							td

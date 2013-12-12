@@ -30,6 +30,7 @@ module.exports = function(app) {
 		var category = req.param('category');
 		var paymentType = req.param('paymentType');
 		var amountForeign = req.param('amountForeign');
+		var groupId = req.param('groupId');
 		var amountHome;
 		var user = req.session.user;
 		var currentCountry = req.session.currentCountry;
@@ -50,7 +51,8 @@ module.exports = function(app) {
 				category: category,
 				paymentType: paymentType,
 				amountForeign: amountForeign,
-				amountHome: amountHome
+				amountHome: amountHome,
+				groupId: groupId
 			}, function(err, transaction) {
 			if(err) return next(err);
 				res.redirect('/transaction/' + transaction.id);
@@ -75,6 +77,12 @@ module.exports = function(app) {
 
 	//view all transactions
 	app.get("/transactions", loggedIn, function(req, res, next) {
+		getSumOfTransactions(req, function(transactions, totals) {
+			res.render('transaction/index.jade', { transactions: transactions, totals: totals});
+		})
+	})
+
+	function getSumOfTransactions(req, callback){
 		var user = req.session.user;
 		var limit = req.param('limit') || 10;
 
@@ -112,10 +120,12 @@ module.exports = function(app) {
 					}) 
 					console.log(transactions[0].created.getMonth());
 					req.session.totals = totals;
-					res.render('transaction/index.jade', { transactions: transactions, totals: totals});
+					
+					callback(transactions, totals);
 				})
 		});
-	})
+
+	}
 
 	//Update
 	app.get("/transaction/edit/:id", loggedIn, function(req, res, next) {
@@ -238,4 +248,49 @@ module.exports = function(app) {
 
 	})
 
-}
+};
+
+exports.getSumOfTransactions = function(req, callback){
+		var user = req.session.user;
+		var limit = req.param('limit') || 10;
+
+		var date = new Date();
+		var month = req.param('month') || date.getMonth();
+		var year = req.param('year') || date.getFullYear();
+		var startDate = new Date(year, --month, 12);
+		var endDate = new Date(year, --month, 31);
+
+		var query = Transaction.find( {
+			user:user,
+		 //'created': { $gt: startDate, $lt : endDate  }
+		  } );
+		query.limit(limit)
+
+		query.exec(function(err, transactions) {
+			if(err) return next(err);
+
+			if(!transactions) return next();
+
+			Transaction.aggregate()
+				.match({ user: user})
+				.limit(limit)
+				.group({ 
+					_id: null,
+					totalForeign: { $sum: '$amountForeign' },
+					totalHome: { $sum: '$amountHome' }
+				})
+				.exec(function(err,totals) {
+					if(err) return next(err);
+
+					totals.forEach(function(total) {
+						total.totalForeign = numeral(total.totalForeign).format('0.00');
+						total.totalHome = numeral(total.totalHome).format('0.00');
+					}) 
+					console.log(transactions[0].created.getMonth());
+					req.session.totals = totals;
+					
+					return callback(transactions, totals);
+				})
+		});
+
+	}

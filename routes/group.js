@@ -10,8 +10,12 @@ var loggedIn = require('../middleware/loggedIn');
 var cleanString = require('../helpers/cleanString');
 
 var mongoose = require('mongoose');
+var ObjectId = require('mongoose').Types.ObjectId; 
 var Group = mongoose.model('Group');
 var User = mongoose.model('User');
+var Transaction = mongoose.model('Transaction');
+var numeral = require('numeral');
+
 
 module.exports = function(app) {
 
@@ -39,6 +43,7 @@ module.exports = function(app) {
 						groupNames.push({name: group.name, groupId: group.groupId})
 					})
 					console.log(groupNames);
+
 
 					res.render('group/index.jade', {groupNames: groupNames});
 					
@@ -102,6 +107,7 @@ module.exports = function(app) {
 	//view group details
 	app.get('/group/:id', loggedIn, function(req,res, next) {
 		var id = req.param('id');
+		var user = req.session.user;
 
 		var query = Group.findById(id);
 		query.exec( function(err, group) {
@@ -112,10 +118,41 @@ module.exports = function(app) {
 			req.session.currentGroupId = group.id;
 			req.session.currentGroupName = group.name;
 
-			console.log(req.session.currentGroupId);
-			console.log(req.session.currentGroupName);
+			Transaction.find({user: user, groupId: id}, function(err, transactions) {
+				if(err) return next(err);
 
-			res.render('group/view.jade', { group: group })
+				//var groupId = ObjectId.fromString('id');
+				//mongoose.Types.ObjectId('id');
+
+				//console.log(groupId);
+
+
+				Transaction.aggregate()
+					.match({ user: user})
+					.group({
+						_id: null,
+						totalForeign: { $sum: '$amountForeign' },
+						totalHome: { $sum: '$amountHome' }
+					})
+					.exec(function(err, totals) {
+						if(err) return next(err);
+
+						totals.forEach(function(total) {
+							total.totalForeign = numeral(total.totalForeign).format('0.00');
+							total.totalHome = numeral(total.totalHome).format('0.00');
+						}) 
+						console.log(totals);
+						console.log(transactions[0].created.getMonth());
+						req.session.totals = totals;
+						
+						res.render('group/view.jade', { transactions: transactions, totals: totals, group: group })
+						
+					})
+
+					
+				
+			})
+
 		})
 	})
 

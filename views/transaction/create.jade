@@ -11,6 +11,8 @@ h1 Add new transaction
 	amountForeign = transaction ? transaction.amountForeign : ''
 
 	addTransaction = transaction ? 'Update transaction' : 'Add transaction'
+
+	groupId = group ? group.id : ''
 	
 	form(method="post", action=action)
 		.row
@@ -30,5 +32,5 @@ h1 Add new transaction
 				label(for="amountForeign") Amount
 				input#amountForeign(name="amountForeign", type='text', value=amountForeign, placeholder="Amount(CAD)")
 			.large-2.columns
-				input#group(type="hidden", name="group", value="group.id")
+				input#group(type="hidden", name="groupId", value=groupId)
 				input#submit(class="button tiny", type="submit", value=addTransaction)
