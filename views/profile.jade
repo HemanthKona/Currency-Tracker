@@ -1,4 +1,5 @@
 extends layout
+extends menu
 
 block content
 	h1 Hello 
@@ -15,4 +16,4 @@ block content
 		tr
 			td Home country
 			td= user.homeCountry	
-	a(href="/profile/edit/" + user.id) Edit profile
+	a(class="button", href="/profile/edit/" + user.id) Edit profile

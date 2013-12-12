@@ -1,6 +1,24 @@
 extends ../layout
+extends ../menu
 
 block content
 	a(href="/group/memebers/add")
-	h2= group.name
-	h2= group.members
+	h2 Name: 
+		= group.name
+	h2 Members: 
+		each member in group.members
+			li= member
+	h3 Number of Members: 
+		= group.numberOfMembers
+	
+	if success
+		.alert-box.success.radius(data-alert)
+			User added successfully.
+	form(method="post", action="/group/addMember")
+		input#groupId(type="hidden", name="groupId", value=group.id)
+		input#groupName(type="hidden", name="groupName", value=group.name)
+		input#groupMember(type="text", name="groupMember")
+		input#addMember(class="button tiny", type="submit")
+
+	include ../transaction/create
+	include ../transaction/all

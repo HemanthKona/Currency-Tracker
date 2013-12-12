@@ -17,7 +17,7 @@ var crypto = require('crypto');
 module.exports = function(app) {
 	
 	app.get('/signup', function(req, res) {
-		res.render('signup.jade');
+		res.render('user/signup.jade');
 	});
 
 	// create account
@@ -30,7 +30,6 @@ module.exports = function(app) {
 		var homeCountry = cleanString(req.param('homeCountry'));
 
 		if(!(email && password)){
-			console.log("email");
 			return invalid();
 		}
 
@@ -79,13 +78,13 @@ module.exports = function(app) {
 		});
 
 	function invalid() {
-		return res.render('signup.jade', { invalid: true });
+		return res.render('user/signup.jade', { invalid: true });
 	}
 	});
 	
 	//login
 	app.get('/login', function(req, res) {
-		res.render('login.jade');
+		res.render('user/login.jade');
 	});
 
 	app.post('/login', function(req, res) {
@@ -125,7 +124,7 @@ module.exports = function(app) {
 		});
 		
 		function invalid() {
-			return res.render('login.jade', { invalid: true });
+			return res.render('user/login.jade', { invalid: true });
 		}
 	});
 

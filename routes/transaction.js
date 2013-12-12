@@ -13,6 +13,7 @@ var loggedIn = require('../middleware/loggedIn');
 var mongoose = require('mongoose');
 var Transaction = mongoose.model('Transaction');
 var User = mongoose.model('User');
+var numeral = require('numeral');
 var fx = require('money');
 var oxr = require('open-exchange-rates');
 oxr.set({ app_id: 'f03d2d61cca9406abd745c5c3b4e66ed'});
@@ -39,7 +40,9 @@ module.exports = function(app) {
 			fx.base = oxr.base;
 			fx.rates = oxr.rates;
 			
+			amountForeign = numeral(amountForeign).format('0.00');
 			amountHome = fx(amountForeign).from(currentCountry).to(homeCountry);
+			amountHome = numeral(amountHome).format('0.00');
 					
 			Transaction.create({
 				user: user,
@@ -73,8 +76,20 @@ module.exports = function(app) {
 	//view all transactions
 	app.get("/transactions", loggedIn, function(req, res, next) {
 		var user = req.session.user;
+		var limit = req.param('limit') || 10;
 
-		var query = Transaction.find({user:user});
+		var date = new Date();
+		var month = req.param('month') || date.getMonth();
+		var year = req.param('year') || date.getFullYear();
+		var startDate = new Date(year, --month, 12);
+		var endDate = new Date(year, --month, 31);
+
+		var query = Transaction.find( {
+			user:user,
+		 //'created': { $gt: startDate, $lt : endDate  }
+		  } );
+		query.limit(limit)
+
 		query.exec(function(err, transactions) {
 			if(err) return next(err);
 
@@ -82,17 +97,21 @@ module.exports = function(app) {
 
 			Transaction.aggregate()
 				.match({ user: user})
+				.limit(limit)
 				.group({ 
 					_id: null,
 					totalForeign: { $sum: '$amountForeign' },
 					totalHome: { $sum: '$amountHome' }
-				}).exec(function(err,totals) {
+				})
+				.exec(function(err,totals) {
 					if(err) return next(err);
-					
-					//console.log(totals);
 
+					totals.forEach(function(total) {
+						total.totalForeign = numeral(total.totalForeign).format('0.00');
+						total.totalHome = numeral(total.totalHome).format('0.00');
+					}) 
+					console.log(transactions[0].created.getMonth());
 					req.session.totals = totals;
-
 					res.render('transaction/index.jade', { transactions: transactions, totals: totals});
 				})
 		});
@@ -120,6 +139,7 @@ module.exports = function(app) {
 			fx.rates = oxr.rates;
 			
 			amountHome = fx(amountForeign).from(currentCountry).to(homeCountry)
+			amountHome = numeral(amountHome).format('0.00');
 
 			var query = { _id: id, user: user};
 			var update = {};

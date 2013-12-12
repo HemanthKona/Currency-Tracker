@@ -1,0 +1,16 @@
+extends layout
+
+block menu
+	.row
+		if session.isLoggedIn
+			.large-4.columns
+				a(href="/transactions") View transactions
+			.large-4.columns
+				a(href="/group/") Group
+			.large-4.columns
+				a(href="/group/create") Create group
+		else
+			.large-2.columns
+				a(href="/login") Login
+			.large-2.columns
+				a(href="/signup") Create Account

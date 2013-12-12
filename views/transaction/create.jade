@@ -1,26 +1,34 @@
-extends ../layout
-
-block content
-	h1 From new transaction
-	action = transaction ? "/transaction/edit/"+transaction.id : "/transaction/newTransaction"
+h1 Add new transaction
+	
+	action = transaction ? "/transaction/edit/"+transaction.id : "/transaction/create"
+	
 	place = transaction ? transaction.place : ''
+	
 	category = transaction ? transaction.category : ''
+	
 	paymentType = transaction ? transaction.paymentType : ''
+	
 	amountForeign = transaction ? transaction.amountForeign : ''
+
+	addTransaction = transaction ? 'Update transaction' : 'Add transaction'
+	
 	form(method="post", action=action)
-		ul
-			li
+		.row
+			.large-2.columns
 				label(for="place") Place
-				input#place(name="place", value=place, placeholder="place")
-			li
+				input#place(name="place", type='text', value=place, placeholder="place")
+
+			.large-2.columns
 				label(for="category") Category
-				input#category(name="category", value=category, placeholder="category")
-			li
+				input#category(name="category", type='text', value=category, placeholder="category")
+
+			.large-2.columns
 				label(for="paymentType") Payment type
-				input#paymentType(name="paymentType", value=paymentType, placeholder="Payment type")
-			li
+				input#paymentType(name="paymentType", type='text', value=paymentType, placeholder="Payment type")
+			
+			.large-2.columns
 				label(for="amountForeign") Amount
-				input#amountForeign(name="amountForeign", value=amountForeign, placeholder="Amount(CAD)")
-			input#group(type="hidden", name="group", value="group.id")
-			li
-				input#submit(type="submit", value="Add transaction")
+				input#amountForeign(name="amountForeign", type='text', value=amountForeign, placeholder="Amount(CAD)")
+			.large-2.columns
+				input#group(type="hidden", name="group", value="group.id")
+				input#submit(class="button tiny", type="submit", value=addTransaction)

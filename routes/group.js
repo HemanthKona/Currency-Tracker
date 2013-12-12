@@ -7,6 +7,8 @@
 */
 
 var loggedIn = require('../middleware/loggedIn');
+var cleanString = require('../helpers/cleanString');
+
 var mongoose = require('mongoose');
 var Group = mongoose.model('Group');
 var User = mongoose.model('User');
@@ -20,55 +22,28 @@ module.exports = function(app) {
 
 		User.aggregate()
 			.match({_id: id})
-			// .project({
-			// 	_id: 0,
-			// 	groups: 1
-			// })
-			.exec(function(err, grouplist) {
+			.project({
+				'_id':0,
+				groups: 1
+			})
+			.exec(function(err, user) {
 				if(err) return next(err);
 
-				if(!grouplist) return next();
+				if(!user) return next(err);
 
-				console.log(grouplist);
+				user.forEach(function(groups) {
+					
+					groups = groups.groups;
 
-				grouplist.forEach(function(groups) {
-					console.log("1");
-					var j = 0;
-					console.log("2");
-					groups[0].forEach(function(g) {
-						console.log("3");
-						Group.findById(g[j], {_id: false, name: true}, function(err, groupName) {
-
-							console.log("4");
-
-							if(err) return next(err);
-
-							if(!groupName) return next();
-
-							groupNames.push(groupName.name);
-
-							j++;
-						});
+					groups.forEach(function(group) {
+						groupNames.push({name: group.name, groupId: group.groupId})
 					})
+					console.log(groupNames);
+
+					res.render('group/index.jade', {groupNames: groupNames});
+					
 				})
-
-
-				// for (var i = 0; i < grouplist.length; i++)
-				// 	var groups = grouplist[i].groups;
-				// 	for(var j = 0; j < groups.length; j++)
-				// 		Group.findById(groups[j], {_id: false, name: true}, function(err, groupName) {
-				// 			if(err) return next(err);
-
-				// 			if(!groupName) return next();
-
-				// 			groupNames.push(groupName.name);
-
-							
-				// 		});
-				
-				console.log(groupNames);
-				res.render('group/index.jade', { groupNames: groupNames });
-
+		
 			})
 
 	})
@@ -79,21 +54,29 @@ module.exports = function(app) {
 	})
 
 	app.post("/group/create", loggedIn, function(req, res, next) {
-		var name = req.param('name');
+		var name = cleanString(req.param('name'));
 		var user = req.session.user;
 		var members = user;
+		var numberOfMembers = 1;
+
+		if(!name) return invalid();
 
 		var query;
 		var update;
 
 		Group.create({
 			name: name,
+			admin: user,
+			numberOfMembers : numberOfMembers,
 			members: members
 		}, function(err, group) {
 			if(err) return next(err);
 
-			req.session.group = group.id;
 			console.log(req.session.group);
+			
+			req.session.currentGroupId = group.id;
+			req.session.currentGroupName = group.name;
+			
 			var group = { name: name, groupId: group.id };
 
 			query = { _id: user }
@@ -107,9 +90,13 @@ module.exports = function(app) {
 					return next(new Error('No user to modify'));
 				}
 
-				res.redirect('/group/' + req.session.group)
+				res.redirect('/group/' + req.session.currentGroupId)
 			})		
 		})
+
+		function invalid() {
+			return res.render('group/create.jade', { invalid: true });
+		}
 	})
 
 	//view group details
@@ -122,13 +109,58 @@ module.exports = function(app) {
 
 			if(!group) return next();
 
+			req.session.currentGroupId = group.id;
+			req.session.currentGroupName = group.name;
+
+			console.log(req.session.currentGroupId);
+			console.log(req.session.currentGroupName);
+
 			res.render('group/view.jade', { group: group })
 		})
 	})
 
-	// //add group transactoin
+	app.post('/group/addMember', loggedIn, function(req, res, next) {
+		var currentGroupId = req.session.currentGroupId;
+		var currentGroupName = req.session.currentGroupName;
 
-	// app.get('/group/transaction/newTransaction', function(req, res) {
-	// 	res.render('/transaction/newTransaction', {})
-	// })
+		var groupId = req.param('groupId');
+		var user = req.param('groupMember');
+
+		var update = { $addToSet: { members: user }, $inc : { numberOfMembers: 1}};
+
+		Group.update({_id: currentGroupId }, update, function(err, num) {
+			if(err) return next(err);
+
+			if (0 == num) {
+				return new Error('No document updated');
+			};
+
+			var group = { name: currentGroupName, groupId: currentGroupId };
+
+			query = { _id: user }
+			update = { $addToSet : { groups : group } }
+
+			User.update(query, update, function(err, num) {
+				if(err) return next(err);
+
+				if(0 === num)
+				{
+					return next(new Error('No user to modify'));
+				}
+
+				res.redirect('/group/' + currentGroupId)
+			})
+
+			User.update({_id: user}, updateUser, function(err, num) {
+				if(err) return next(err);
+
+				if (0 == num) {
+					return new Error('No document updated');
+				}
+
+			})
+	
+		})
+		
+	})
 }

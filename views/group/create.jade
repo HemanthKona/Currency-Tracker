@@ -1,12 +1,15 @@
 extends ../layout
+extends ../menu
 
 block content
 	h1 Create group
 
+	if invalid
+		div(data-alert, class="alert-box warning")
+			| Invalid group name try again
+
 	form(method="post", action="/group/create")
-		ul
-			li
-				label(for="name") Name:
-				input#name(name="name", value=name, placeholder="Name")
-			li
-				input#submit(type="submit", value="Create group")
+		label(for="name") Name:
+		input#name(name="name", type='text', value=name, placeholder="Name")
+		
+		input#submit(class="button", type="submit", value="Create group")

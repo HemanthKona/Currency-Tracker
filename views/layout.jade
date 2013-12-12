@@ -1,28 +1,30 @@
 html
 	head
-		title Hello worl
-		link(ref='stylesheet', type='text/css', href='/stylesheets/style.css')
+		title Currency Tracker
+		link(rel='stylesheet', type='text/css', href='/stylesheets/foundation.css')
+		link(rel='stylesheet', type='text/css', href='/stylesheets/foundation-icons.css')
+		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
 	body
-		a(href="/") Home
-			section.login
-			ul
-				if session.isLoggedIn
-					li
-						a(href="/logout") Logout
-					li
-						a(href="/transaction/create") New Transaction
-					li
-						a(href="/transactions") View transactions
-					li
-						a(href="/profile") Profile
-					li
-						a(href="/group/") Group
-					li
-						a(href="/group/create") Create group
-				else
-					li
-						a(href="/login") Login
-					li
-						a(href="/signup") Create Account
-		section.content
-			block content
+		.row
+			.large-10.small-8.columns
+				h1 
+					a(href="/") Currency Tracker
+				p Be aware of money you spent
+			if session.isLoggedIn
+				.large-1.small-2.columns
+					a(href="/profile") 
+						i.fi-torso
+						p  Profile
+				.large-1.small-2.columns
+					a(href="/logout")
+						i.fi-power
+						p Logout
+			hr
+		.row
+			.large-12.small-12.columns
+				section.menu
+					block menu
+		.row
+			.large-12.small-12.columns
+				section.content
+					block content

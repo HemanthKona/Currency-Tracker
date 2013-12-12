@@ -1,7 +1,8 @@
 extends layout
+extends menu
 
 block content
-	h1 From Edit profile
+	h1 Edit profile
 	action = user ? "/profile/edit/"+user.id : '/login'
 	firstname = user ? user.name.first : ''
 	lastname = user ? user.name.last : ''
@@ -9,17 +10,16 @@ block content
 	currentCountry = user ? user.currentCountry : ''
 	homeCountry = user ? user.homeCountry : ''
 	form(method="post", action=action)
-		ul
-			li
-				label(for='firstname') First Name:
-				input#firstname(name='firstname', value=firstname)
-			li
-				label(for='lastname') Last Name:
-				input#lastname(name='lastname', value=lastname)
-			li
-				label(for='currentCountry') Current country:
-				input#currentCountry(name='currentCountry', placeholder="CAD, USD .. ", value=currentCountry)
-			li
-				label(for='homeCountry') Home country:
-				input#homeCountry(name='homeCountry', placeholder="INR, EUR .. ", value=homeCountry)
-		input(type='submit', value='Update')
+		label(for='firstname') First Name:
+		input#firstname(name='firstname', type='text', value=firstname)
+		
+		label(for='lastname') Last Name:
+		input#lastname(name='lastname', type='text', value=lastname)
+		
+		label(for='currentCountry') Current country:
+		input#currentCountry(name='currentCountry', type='text', placeholder="CAD, USD .. ", value=currentCountry)
+			
+		label(for='homeCountry') Home country:
+		input#homeCountry(name='homeCountry', type='text', placeholder="INR, EUR .. ", value=homeCountry)
+		
+		input(class="button", type='submit', value='Update')

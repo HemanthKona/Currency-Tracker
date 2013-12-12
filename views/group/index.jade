@@ -1,10 +1,11 @@
 extends ../layout
+extends ../menu
 
 block content
-	h1 From group Index
+	h1 Groups
 	if !(groupNames && groupNames.length)
-		p No groups present
+		p You are not a member of any group yet
 	else
-		each groupName in groupNames
-			p= groupName
-
+		each group in groupNames
+			li
+				a(href="/group/"+group.groupId)= group.name

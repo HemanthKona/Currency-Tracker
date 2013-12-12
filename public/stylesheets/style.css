@@ -1,4 +1,18 @@
-h1{
-	color: red;
-	
+.columns {
+	/*border: 1px solid #333;*/
+}
+i {
+	font-size: 1.2em;
+	color: #3B628D;
+	text-shadow: 1px 1px 3px #558D9E;
+}
+i:hover { 
+	color: rgb(214, 88, 83);
+	text-shadow: 1px 1px 3px #333;
+}
+i.fi-power{
+	font-size: 72;
+}
+i.fi-torso{
+	font-size: 72;
 }
