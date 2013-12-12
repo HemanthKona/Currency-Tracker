@@ -19,7 +19,7 @@ var schema = mongoose.Schema({
 	paymentType: { type: String, trim: true},
 	amountForeign: { type : Number, trim: true, required: true, min: 0 },
 	amountHome: { type : Number, trim: true },
-	groupId: { type : ObjectId, ref: 'Group' }
+	groupId: { type : Number, ref: 'Group' }
 });
 
 // add created date property to the schema

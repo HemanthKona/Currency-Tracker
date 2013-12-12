@@ -10,7 +10,6 @@ var loggedIn = require('../middleware/loggedIn');
 var cleanString = require('../helpers/cleanString');
 
 var mongoose = require('mongoose');
-var ObjectId = require('mongoose').Types.ObjectId; 
 var Group = mongoose.model('Group');
 var User = mongoose.model('User');
 var Transaction = mongoose.model('Transaction');
@@ -63,6 +62,8 @@ module.exports = function(app) {
 		var user = req.session.user;
 		var members = user;
 		var numberOfMembers = 1;
+		var groupNumber = 0;
+		groupNumber++
 
 		if(!name) return invalid();
 
@@ -70,6 +71,7 @@ module.exports = function(app) {
 		var update;
 
 		Group.create({
+			groupNumber: groupNumber,
 			name: name,
 			admin: user,
 			numberOfMembers : numberOfMembers,
@@ -118,17 +120,16 @@ module.exports = function(app) {
 			req.session.currentGroupId = group.id;
 			req.session.currentGroupName = group.name;
 
-			Transaction.find({user: user, groupId: id}, function(err, transactions) {
+			Transaction.find({user: user, groupId: group.groupNumber}, function(err, transactions) {
 				if(err) return next(err);
-
-				//var groupId = ObjectId.fromString('id');
-				//mongoose.Types.ObjectId('id');
-
-				//console.log(groupId);
+				
+				if(transactions.length == 0) {
+					res.render('group/view.jade', { group: group, transactions: 0})
+				}
 
 
 				Transaction.aggregate()
-					.match({ user: user})
+					.match({ user: user, groupId:0})
 					.group({
 						_id: null,
 						totalForeign: { $sum: '$amountForeign' },
@@ -149,8 +150,6 @@ module.exports = function(app) {
 						
 					})
 
-					
-				
 			})
 
 		})
