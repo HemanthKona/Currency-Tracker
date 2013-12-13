@@ -16,6 +16,12 @@ i.fi-power{
 i.fi-torso{
 	font-size: 72;
 }
+
+i.fi-play:hover{
+	font-size: 24;
+	transform: rotate(-30deg);
+	-webkit-transform: rotate(-30deg);
+}
 .buttonMarginTop{
 	margin-top: 20px;
 }

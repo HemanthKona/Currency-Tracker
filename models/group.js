@@ -9,7 +9,10 @@
 */
 
 var mongoose = require('mongoose');
+var autoIncrement = require('mongoose-auto-increment');
 var createdDate = require('../plugins/createdDate');
+
+autoIncrement.initialize(mongoose);
 
 // Transaction schema definition
 var schema = mongoose.Schema({
@@ -20,6 +23,13 @@ var schema = mongoose.Schema({
 	members: { type: Array(10), ref : 'User' }
 });
 
+//auto increment groupNumber field
+schema.plugin(autoIncrement.plugin,  {
+    model: 'Group',
+    field: 'groupNumber',
+    startAt: 1,
+    incrementBy: 1
+});
 // add created date property to the schema
 schema.plugin(createdDate);
 
