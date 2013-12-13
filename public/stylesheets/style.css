@@ -1,5 +1,5 @@
 .columns {
-	/*border: 1px solid #333;*/
+	/*border: 3px solid #333;*/
 }
 i {
 	font-size: 1.2em;
@@ -15,4 +15,7 @@ i.fi-power{
 }
 i.fi-torso{
 	font-size: 72;
+}
+.buttonMarginTop{
+	margin-top: 20px;
 }

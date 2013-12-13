@@ -1,36 +1,37 @@
-h1 Add new transaction
+h3 Add new transaction
 	
-	action = transaction ? "/transaction/edit/"+transaction.id : "/transaction/create"
+action = transaction ? "/transaction/edit/"+transaction.id : "/transaction/create"
 	
-	place = transaction ? transaction.place : ''
+place = transaction ? transaction.place : ''
 	
-	category = transaction ? transaction.category : ''
+category = transaction ? transaction.category : ''
 	
-	paymentType = transaction ? transaction.paymentType : ''
+paymentType = transaction ? transaction.paymentType : ''
 	
-	amountForeign = transaction ? transaction.amountForeign : ''
+amountForeign = transaction ? transaction.amountForeign : ''
 
-	addTransaction = transaction ? 'Update transaction' : 'Add transaction'
+addTransaction = transaction ? 'Update' : 'Add'
 
-	groupId = group ? '0': '0'
+groupNumber = group ? group.groupNumber : 0
 	
-	form(method="post", action=action)
-		.row
-			.large-2.columns
-				label(for="place") Place
-				input#place(name="place", type='text', value=place, placeholder="place")
+form(method="post", action=action)
+	.row
+		.large-2.columns
+			label(for="place") Place
+			input#place(name="place", type='text', value=place, placeholder="place")
 
-			.large-2.columns
-				label(for="category") Category
-				input#category(name="category", type='text', value=category, placeholder="category")
+		.large-2.columns
+			label(for="category") Category
+			input#category(name="category", type='text', value=category, placeholder="category")
 
-			.large-2.columns
-				label(for="paymentType") Payment type
-				input#paymentType(name="paymentType", type='text', value=paymentType, placeholder="Payment type")
+		.large-3.columns
+			label(for="paymentType") Payment type
+			input#paymentType(name="paymentType", type='text', value=paymentType, placeholder="Payment type")
 			
-			.large-2.columns
-				label(for="amountForeign") Amount
-				input#amountForeign(name="amountForeign", type='text', value=amountForeign, placeholder="Amount(CAD)")
-			.large-2.columns
-				input#group(type="hidden", name="groupId", value=groupId)
-				input#submit(class="button tiny", type="submit", value=addTransaction)
+		.large-3.columns
+			label(for="amountForeign") Amount
+			input#amountForeign(name="amountForeign", type='text', value=amountForeign, placeholder="Amount(CAD)")
+
+		.large-2.small-2.columns
+			input#group(type="hidden", name="groupNumber", value=groupNumber)
+			input#submit(class="button tiny buttonMarginTop", type="submit", value=addTransaction)

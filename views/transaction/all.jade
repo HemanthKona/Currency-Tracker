@@ -2,14 +2,6 @@ if !(transactions && transactions != 0)
 		p No transactions yet
 	else
 		.row
-			.large-3.columns
-				form(id="groupby")
-					select(name="month")
-						i = 1 
-						each month in ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-							option(value=i++)= month 
-								| - 2013
-		.row
 			.large-12.small-12.columns
 				table(width="100%")
 					tr

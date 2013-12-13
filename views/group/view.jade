@@ -2,22 +2,25 @@ extends ../layout
 extends ../menu
 
 block content
-	h2 Name: 
-		= group.name
-	h2 Members: 
-		each member in group.members
-			li= member
-	h3 Number of Members: 
-		= group.numberOfMembers
+	.row
+		.large-8.columns
+			h2 Name: 
+				= group.name
+			a(href="/group/members/" + group.id , class="button") Members
+		.large-4.columns
+			p Number of Members: 
+				= group.numberOfMembers
+			form(method="post", action="/group/addMember")
+				input#groupId(type="hidden", name="groupId", value=group.id)
+				input#groupName(type="hidden", name="groupName", value=group.name)
+				input#groupMember(type="text", name="groupMember")
+				input#addMember(class="button tiny", type="submit")
+			if success
+				.alert-box.success.radius(data-alert)
+					User added successfully.
+			
 	
-	if success
-		.alert-box.success.radius(data-alert)
-			User added successfully.
-	form(method="post", action="/group/addMember")
-		input#groupId(type="hidden", name="groupId", value=group.id)
-		input#groupName(type="hidden", name="groupName", value=group.name)
-		input#groupMember(type="text", name="groupMember")
-		input#addMember(class="button tiny", type="submit")
-
-	include ../transaction/create
-	include ../transaction/all
+	.row
+		.large-12.columns
+			include ../transaction/create
+			include ../transaction/all

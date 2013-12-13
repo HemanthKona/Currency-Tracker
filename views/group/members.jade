@@ -1,0 +1,8 @@
+extends ../layout
+extends ../menu
+
+block content
+	h4 Members: 
+		each member, i in group.members
+			if i < 2
+				li= member

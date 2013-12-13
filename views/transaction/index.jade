@@ -3,4 +3,13 @@ extends ../menu
 
 block content
 	include create
+	.row
+			.large-3.columns
+				form(id="groupby", method="get")
+					label(for="month") Select month
+					select(name="month", onchange="this.form.submit()")
+						i = 0
+						each month in ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+							option(value=i++)= month 
+								| - 2013
 	include all

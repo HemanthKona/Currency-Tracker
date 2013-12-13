@@ -2,28 +2,30 @@ extends ../layout
 extends ../menu
 
 block content
-	h2 Your current transaction
-	hr
-	table
-		tr
-			th Place: 
-			td= transaction.place
-		tr
-			th Category:
-			td= transaction.category
-		tr
-			th Payment type
-			td= transaction.paymentType
-		tr
-			th Amount foreign
-			td= transaction.amountForeign
-		tr
-			th Amount home
-			td= transaction.amountHome
-		tr
-			th Created
-			td= transaction.created
+	.row
+		.large-12.columns
+			h2 Your current transaction
+			hr
+			table
+				tr
+					th Place: 
+					td= transaction.place
+				tr
+					th Category:
+					td= transaction.category
+				tr
+					th Payment type
+					td= transaction.paymentType
+				tr
+					th Amount foreign
+					td= transaction.amountForeign
+				tr
+					th Amount home
+					td= transaction.amountHome
+				tr
+					th Created
+					td= transaction.created
 
-	a(class="button", href="/transaction/remove/" + transaction.id) Remove 
-	| 
-	a(class="button", href="/transaction/edit/" + transaction.id) Edit
+			a(class="button", href="/transaction/remove/" + transaction.id) Remove 
+			| 
+			a(class="button", href="/transaction/edit/" + transaction.id) Edit

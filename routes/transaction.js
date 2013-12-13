@@ -30,8 +30,9 @@ module.exports = function(app) {
 		var category = req.param('category');
 		var paymentType = req.param('paymentType');
 		var amountForeign = req.param('amountForeign');
-		var groupId = req.param('groupId') || '-1';
+		var groupId = req.param('groupNumber');
 		var amountHome;
+		
 		var user = req.session.user;
 		var currentCountry = req.session.currentCountry;
 		var homeCountry = req.session.homeCountry;
@@ -54,7 +55,9 @@ module.exports = function(app) {
 				amountHome: amountHome,
 				groupId: groupId
 			}, function(err, transaction) {
-			if(err) return next(err);
+				
+				if(err) return next(err);
+				
 				res.redirect('/transaction/' + transaction.id);
 			});
 			
@@ -84,12 +87,18 @@ module.exports = function(app) {
 		var date = new Date();
 		var month = req.param('month') || date.getMonth();
 		var year = req.param('year') || date.getFullYear();
-		var startDate = new Date(year, --month, 12);
-		var endDate = new Date(year, --month, 31);
+		
+		console.log(month);
+		var startDate = new Date(year, month, 1);
+		console.log(month);
+		console.log(startDate);
+		var endDate = new Date(year, month, 31);
+		console.log(month);
+		console.log(endDate);
 
 		var query = Transaction.find( {
 			user:user,
-		 //'created': { $gt: startDate, $lt : endDate  }
+		 	created: { $gt: startDate, $lt : endDate  }
 		  } );
 		query.limit(limit)
 
@@ -101,30 +110,39 @@ module.exports = function(app) {
 			if(!transactions) return next();
 
 			if(transactions.length == 0) {
-				res.render('transaction/index.jade', { transactions: 0})
+				res.render('transaction/index.jade', { transactions: 0});
 			}
+			else{
 
-			Transaction.aggregate()
-				.match({ user: user})
-				.limit(limit)
-				.group({ 
-					_id: null,
-					totalForeign: { $sum: '$amountForeign' },
-					totalHome: { $sum: '$amountHome' }
-				})
-				.exec(function(err,totals) {
-					if(err) return next(err);
 
-					totals.forEach(function(total) {
-						total.totalForeign = numeral(total.totalForeign).format('0.00');
-						total.totalHome = numeral(total.totalHome).format('0.00');
-					}) 
-					console.log(transactions[0].created.getMonth());
-					req.session.totals = totals;
-					
-					res.render('transaction/index.jade', { transactions: transactions, totals: totals});
-					
-				})
+				Transaction.aggregate()
+					.match({ 
+						user: user, 
+						created: { $gt: startDate, $lt : endDate  }
+					})
+					.limit(limit)
+					.group({ 
+						_id: null,
+						totalForeign: { $sum: '$amountForeign' },
+						totalHome: { $sum: '$amountHome' }
+					})
+					.exec(function(err,totals) {
+						if(err) return next(err);
+
+						if(!totals) totals = 0;
+
+						totals.forEach(function(total) {
+							total.totalForeign = numeral(total.totalForeign).format('0.00');
+							total.totalHome = numeral(total.totalHome).format('0.00');
+						}) 
+						//console.log(transactions[0].created.getMonth());
+						req.session.totals = totals;
+						
+						res.render('transaction/index.jade', { transactions: transactions, totals: totals});
+						
+					})
+			}
+			
 		})
 
 	})

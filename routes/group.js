@@ -110,46 +110,51 @@ module.exports = function(app) {
 	app.get('/group/:id', loggedIn, function(req,res, next) {
 		var id = req.param('id');
 		var user = req.session.user;
+		
+		// console.log(id) => 453464564564
 
+		req.session.currentGroupId = id;
+		
 		var query = Group.findById(id);
 		query.exec( function(err, group) {
 			if(err) return next(err);
 
 			if(!group) return next();
 
-			req.session.currentGroupId = group.id;
 			req.session.currentGroupName = group.name;
 
-			Transaction.find({user: user, groupId: group.groupNumber}, function(err, transactions) {
+
+
+			Transaction.find({groupId: group.groupNumber}, function(err, transactions) {
 				if(err) return next(err);
 				
 				if(transactions.length == 0) {
 					res.render('group/view.jade', { group: group, transactions: 0})
 				}
 
+				else {
+					Transaction.aggregate()
+						.match({ user: user, groupId:group.groupNumber})
+						.group({
+							_id: null,
+							totalForeign: { $sum: '$amountForeign' },
+							totalHome: { $sum: '$amountHome' }
+						})
+						.exec(function(err, totals) {
+							if(err) return next(err);
 
-				Transaction.aggregate()
-					.match({ user: user, groupId:0})
-					.group({
-						_id: null,
-						totalForeign: { $sum: '$amountForeign' },
-						totalHome: { $sum: '$amountHome' }
-					})
-					.exec(function(err, totals) {
-						if(err) return next(err);
-
-						totals.forEach(function(total) {
-							total.totalForeign = numeral(total.totalForeign).format('0.00');
-							total.totalHome = numeral(total.totalHome).format('0.00');
-						}) 
-						console.log(totals);
-						console.log(transactions[0].created.getMonth());
-						req.session.totals = totals;
-						
-						res.render('group/view.jade', { transactions: transactions, totals: totals, group: group })
-						
-					})
-
+							totals.forEach(function(total) {
+								total.totalForeign = numeral(total.totalForeign).format('0.00');
+								total.totalHome = numeral(total.totalHome).format('0.00');
+							}) 
+							console.log(totals);
+							console.log(transactions[0].created.getMonth());
+							req.session.totals = totals;
+							
+							res.render('group/view.jade', { transactions: transactions, totals: totals, group: group })
+							
+						})
+				}
 			})
 
 		})
@@ -186,17 +191,20 @@ module.exports = function(app) {
 
 				res.redirect('/group/' + currentGroupId)
 			})
-
-			User.update({_id: user}, updateUser, function(err, num) {
-				if(err) return next(err);
-
-				if (0 == num) {
-					return new Error('No document updated');
-				}
-
-			})
 	
 		})
 		
+	})
+
+	app.get('/group/members/:id', loggedIn, function(req, res, next) {
+		console.dir(req.session.currentGroupId);
+		var id = req.session.currentGroupId;
+		//console.dir(groupId);
+		var query = Group.findById(id);
+		query.exec(function(err, group) {
+			if(err) return next(err);
+
+			res.render('group/members.jade', { group: group });
+		})
 	})
 }
