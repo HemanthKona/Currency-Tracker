@@ -1,5 +1,6 @@
 /*
   index.js
+  exports all routes
   
   Revision history
   Hemanth Kona, 2013.11.12: created

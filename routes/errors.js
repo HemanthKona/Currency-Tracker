@@ -1,3 +1,12 @@
+/*
+	error.js
+	errors are handled here
+	
+	Revision history
+	Hemanth Kona, 2013.11.30: created
+*/
+
+
 module.exports = function(app) {
 	app.use(function(req, res, next) {
 		res.status(404);

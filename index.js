@@ -15,9 +15,9 @@ var models = require('./models');
 var routes = require('./routes');
 var middleware = require('./middleware');
 
-var mongoUri = 'mongodb://localhost/currency' || 'mongodb://user:password@dharma.mongohq.com:10068/currency';
+var mongoUri = 'mongodb://localhost/currency' || 'mongodb://admin:^ight^@dharma.mongohq.com:10068/currency';
 
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 
 //Connecting to mongo instance
 mongoose.connect(mongoUri, function(err) {
@@ -27,7 +27,7 @@ mongoose.connect(mongoUri, function(err) {
 	middleware(app);
 	routes(app);
 
-	var port = process.env.PORT || 3000
+	var port = app.get('port');
 
 	app.listen(port, function() {
 		console.log('Now listening on localhost port ' + port);

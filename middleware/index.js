@@ -1,3 +1,11 @@
+/*
+  	index.js
+	All the middleware, global variables are declared here
+
+	Revision history
+	Hemanth Kona, 2013.11.12: created
+*/
+
 var express = require('express');
 
 module.exports = function(app) {

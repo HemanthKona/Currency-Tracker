@@ -1,6 +1,6 @@
 /*
 	index.js
-	Starting point of the application
+	Exports all the model modules
 
 	Revision history
 	Hemanth Kona, 2013.11.12: created
