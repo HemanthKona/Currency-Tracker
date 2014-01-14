@@ -16,7 +16,7 @@ var createdDate = require('../plugins/createdDate');
 
 // Transaction schema definition
 var schema = mongoose.Schema({
-	groupNumber: { type: Number, required: true},
+	groupNumber: { type: Number, required: true, },
 	name: { type: String, trim: true },
 	admin: { type: String, ref: 'User' },
 	numberOfMembers: { type: Number, Default: 1 },

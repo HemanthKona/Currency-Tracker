@@ -27,7 +27,10 @@ form(method="post", action=action)
 
 		.large-3.columns
 			label(for="paymentType") Payment type
-			input#paymentType(name="paymentType", type='text', value=paymentType, placeholder="Payment type")
+			select(name="paymentType")
+				option(value="Cash") Cash
+				option(value="Credit") Credit
+				option(value="Debit") Debit
 			
 		.large-3.columns
 			label(for="amountForeign") Amount
