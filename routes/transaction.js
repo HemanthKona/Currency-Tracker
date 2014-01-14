@@ -81,6 +81,8 @@ module.exports = function(app) {
 	//view all transactions
 	app.get("/transactions", loggedIn, function(req, res, next) {
 		
+		req.session.currentGroupNumber = 0;
+		
 		var user = req.session.user;
 		var limit = req.param('limit') || 10;
 
@@ -88,13 +90,8 @@ module.exports = function(app) {
 		var month = req.param('month') || date.getMonth();
 		var year = req.param('year') || date.getFullYear();
 		
-		console.log(month);
-		var startDate = new Date(year, month, 1);
-		console.log(month);
-		console.log(startDate);
+		var startDate = new Date(year, month, 1)
 		var endDate = new Date(year, month, 31);
-		console.log(month);
-		console.log(endDate);
 
 		var query = Transaction.find( {
 			user:user,
@@ -146,60 +143,6 @@ module.exports = function(app) {
 		})
 
 	})
-
-	function getSumOfTransactions(req, callback){
-		var user = req.session.user;
-		var limit = req.param('limit') || 10;
-
-		var date = new Date();
-		var month = req.param('month') || date.getMonth();
-		var year = req.param('year') || date.getFullYear();
-		var startDate = new Date(year, --month, 12);
-		var endDate = new Date(year, --month, 31);
-
-		var query = Transaction.find( {
-			user:user,
-		 //'created': { $gt: startDate, $lt : endDate  }
-		  } );
-		query.limit(limit)
-
-		query.exec(function(err, transactions) {
-			if(err) return next(err);
-
-			console.log(transactions);
-
-			if(!transactions) return next();
-
-			if(transactions.length == 0) {
-				transactions = [];
-				var totals = [];
-				callback(transactions, totals);
-
-			}
-
-			Transaction.aggregate()
-				.match({ user: user})
-				.limit(limit)
-				.group({ 
-					_id: null,
-					totalForeign: { $sum: '$amountForeign' },
-					totalHome: { $sum: '$amountHome' }
-				})
-				.exec(function(err,totals) {
-					if(err) return next(err);
-
-					totals.forEach(function(total) {
-						total.totalForeign = numeral(total.totalForeign).format('0.00');
-						total.totalHome = numeral(total.totalHome).format('0.00');
-					}) 
-					console.log(transactions[0].created.getMonth());
-					req.session.totals = totals;
-					
-					callback(transactions, totals);
-				})
-		});
-
-	}
 
 	//Update
 	app.get("/transaction/edit/:id", loggedIn, function(req, res, next) {
@@ -270,13 +213,24 @@ module.exports = function(app) {
 		var sort = req.param('sort');
 		var user = req.session.user;
 		var totals = req.session.totals;
-		
+		var groupNumber = req.session.currentGroupNumber;
+		groupNumber = parseInt(groupNumber);
+		var match;
+
+		console.log(groupNumber);
+
+		if(groupNumber == 0) match = { user : user};
+
+		if(groupNumber > 0) match = { groupId: groupNumber};
+
+		console.log(match);
+
 		if(!req.session.sortDirection) req.session.sortDirection = 1;
 		else if(req.session.sortDirection === 1) req.session.sortDirection = -1;
 		else req.session.sortDirection = 1;
 
-		var query = Transaction.aggregate().match({ user: user})
-		
+		var query = Transaction.aggregate().match(match);
+
 		if(sort == "created"){
 			query.sort({
 				created : req.session.sortDirection
@@ -310,61 +264,17 @@ module.exports = function(app) {
 			query.sort({
 				amountHome : req.session.sortDirection
 			})
+
 		}
 
 		query.exec(function(err,transactions) {
 			if(err) return next(err);
 
 			if(!transactions) return next();
-			
+
 			res.render('transaction/index.jade', { transactions: transactions, totals: totals});
 		})
 
 	})
 
-};
-
-exports.getSumOfTransactions = function(req, callback){
-		var user = req.session.user;
-		var limit = req.param('limit') || 10;
-
-		var date = new Date();
-		var month = req.param('month') || date.getMonth();
-		var year = req.param('year') || date.getFullYear();
-		var startDate = new Date(year, --month, 12);
-		var endDate = new Date(year, --month, 31);
-
-		var query = Transaction.find( {
-			user:user,
-		 //'created': { $gt: startDate, $lt : endDate  }
-		  } );
-		query.limit(limit)
-
-		query.exec(function(err, transactions) {
-			if(err) return next(err);
-
-			if(!transactions) return next();
-
-			Transaction.aggregate()
-				.match({ user: user})
-				.limit(limit)
-				.group({ 
-					_id: null,
-					totalForeign: { $sum: '$amountForeign' },
-					totalHome: { $sum: '$amountHome' }
-				})
-				.exec(function(err,totals) {
-					if(err) return next(err);
-
-					totals.forEach(function(total) {
-						total.totalForeign = numeral(total.totalForeign).format('0.00');
-						total.totalHome = numeral(total.totalHome).format('0.00');
-					}) 
-					console.log(transactions[0].created.getMonth());
-					req.session.totals = totals;
-					
-					return callback(transactions, totals);
-				})
-		});
-
-	}
+}

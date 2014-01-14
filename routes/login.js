@@ -41,7 +41,7 @@ module.exports = function(app) {
 
 			if(user) {
 				console.log('3');
-				return res.render('signup.jade', { exists: true});
+				return res.render('user/signup.jade', { exists: true});
 			}
 
 			crypto.randomBytes(16, function (err, bytes) {

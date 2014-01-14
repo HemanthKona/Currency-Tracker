@@ -23,7 +23,8 @@ var schema = mongoose.Schema({
 	homeCountry: { type: String, default: 'INR' },
 	groups: [{
 		name: String,
-		groupId: {type: ObjectId, ref: 'Group'}
+		groupId: {type: ObjectId, ref: 'Group'},
+		groupNumber: {type: Number, ref: 'Group'}
 	}]
 });
 
