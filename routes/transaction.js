@@ -277,4 +277,12 @@ module.exports = function(app) {
 
 	})
 
+	app.get("/transactions/groupby/user", loggedIn, function(req, res, next) {
+		Transaction.aggregate()
+			.group({
+				
+			})
+		res.redirect("/transactions");
+	})
+
 }

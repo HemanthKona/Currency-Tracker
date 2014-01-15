@@ -7,6 +7,10 @@
 				each month in ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 					option(value=i++)= month 
 						| - 2014
+	.large-3.columns
+		p Group by: 
+			br
+			a(class="tiny button", href="/transactions/groupby/user") User 
 	hr
 if !(transactions && transactions != 0)
 		p No expenses recorded yet
