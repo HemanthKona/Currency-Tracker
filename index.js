@@ -15,7 +15,7 @@ var models = require('./models');
 var routes = require('./routes');
 var middleware = require('./middleware');
 
-var mongoUri = 'mongodb://localhost/currency' || 'mongodb://admin:^ight^@dharma.mongohq.com:10068/currency';
+var mongoUri = 'mongodb://localhost/currency';
 
 //mongoose.set('debug', true);
 
